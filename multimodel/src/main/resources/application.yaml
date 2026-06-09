@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: multimodel
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+    ollama:
+      chat:
+        options:
+          model: deepseek-r1:14b
+    chat:
+      client:
+        enabled: false
+
+logging:
+  pattern:
+    console: '%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n'

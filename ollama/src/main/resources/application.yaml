@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ollama
+  ai:
+    model:
+      chat: ollama
+    ollama:
+      chat:
+        options:
+          model: deepseek-r1:14b
+
+logging:
+  pattern:
+    console: '%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n'

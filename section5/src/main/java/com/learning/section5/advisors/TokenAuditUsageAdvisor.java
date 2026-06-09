@@ -1,0 +1,41 @@
+package com.learning.section5.advisors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.ai.chat.client.ChatClientRequest;
+import org.springframework.ai.chat.client.ChatClientResponse;
+import org.springframework.ai.chat.client.advisor.api.CallAdvisor;
+import org.springframework.ai.chat.client.advisor.api.CallAdvisorChain;
+import org.springframework.ai.chat.metadata.Usage;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TokenAuditUsageAdvisor implements CallAdvisor {
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenAuditUsageAdvisor.class);
+
+    @Override
+    public ChatClientResponse adviseCall(@NonNull ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain) {
+        ChatClientResponse chatClientResponse = callAdvisorChain.nextCall(chatClientRequest);
+        ChatResponse chatResponse = chatClientResponse.chatResponse();
+        if (chatResponse != null && chatResponse.getMetadata() != null) {
+            Usage usage = chatResponse.getMetadata().getUsage();
+            if (usage != null) {
+                logger.info("Token usage details : {}", usage);
+            }
+        }
+        return chatClientResponse;
+    }
+
+    @Override
+    public String getName() {
+        return "TokenAuditUsageAdvisor";
+    }
+
+    @Override
+    public int getOrder() {
+        return 1;
+    }
+}
