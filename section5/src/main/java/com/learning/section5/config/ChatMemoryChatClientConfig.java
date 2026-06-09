@@ -20,7 +20,17 @@ import java.util.List;
 public class ChatMemoryChatClientConfig {
 
     @Bean("chatMemoryChatClient")
-    public ChatClient chatClient(ChatClient.Builder clientBuilder, ChatMemory chatMemory, RetrievalAugmentationAdvisor retrievalAugmentationAdvisor) {
+    public ChatClient chatClient(ChatClient.Builder clientBuilder, ChatMemory chatMemory) {
+        Advisor loggingAdvisor = new SimpleLoggerAdvisor();
+        Advisor tokenUsageAdvisor = new TokenAuditUsageAdvisor();
+        Advisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
+        return clientBuilder
+                .defaultAdvisors(List.of(loggingAdvisor, memoryAdvisor, tokenUsageAdvisor))
+                .build();
+    }
+
+    @Bean("chatMemoryChatClientRagAdvisor")
+    public ChatClient chatClientWithRagAdvisor(ChatClient.Builder clientBuilder, ChatMemory chatMemory, RetrievalAugmentationAdvisor retrievalAugmentationAdvisor) {
         Advisor loggingAdvisor = new SimpleLoggerAdvisor();
         Advisor tokenUsageAdvisor = new TokenAuditUsageAdvisor();
         Advisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
