@@ -23,12 +23,15 @@ public class RagController {
     private final ChatClient chatClient;
     private final VectorStore vectorStore;
     private final ChatClient chatMemoryChatClientRagAdvisor;
+    private final ChatClient webSearchRAGChatClient;
 
     public RagController(@Qualifier("chatMemoryChatClient") ChatClient chatClient, VectorStore vectorStore,
-                         @Qualifier("chatMemoryChatClientRagAdvisor") ChatClient chatMemoryChatClientRagAdvisor) {
+                         @Qualifier("chatMemoryChatClientRagAdvisor") ChatClient chatMemoryChatClientRagAdvisor,
+                         @Qualifier("webSearchRAGChatClient") ChatClient webSearchRAGChatClient) {
         this.chatClient = chatClient;
         this.vectorStore = vectorStore;
         this.chatMemoryChatClientRagAdvisor = chatMemoryChatClientRagAdvisor;
+        this.webSearchRAGChatClient = webSearchRAGChatClient;
     }
 
     @Value("classpath:/promptTemplates/systemPromptRandomDataTemplate.st")
@@ -95,5 +98,16 @@ public class RagController {
 
         return ResponseEntity.ok(answer);
 
+    }
+
+    @GetMapping("/web-search/chat")
+    public ResponseEntity<String> webSearchChat(@RequestHeader("username")  String username,
+                                                @RequestParam("message") String message) {
+        String answer = webSearchRAGChatClient.prompt()
+                .advisors(advisorSpec -> advisorSpec.param(CONVERSATION_ID, username))
+                .user(message)
+                .call()
+                .content();
+        return ResponseEntity.ok(answer);
     }
 }
