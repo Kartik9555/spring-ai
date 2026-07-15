@@ -14,13 +14,10 @@ public class ChatClientConfig {
 
     @Bean
     public ChatClient chatClient(ChatClient.Builder clientBuilder) {
-        ChatOptions chatOptions = ChatOptions.builder()
-                .model("gpt-4o-mini")
-                .temperature(0.8)
-                .build();
-
         return clientBuilder
-                .defaultOptions(chatOptions)
+                .defaultOptions(ChatOptions.builder()
+                        .model("gpt-4o-mini")
+                        .temperature(0.8))
                 .defaultAdvisors(List.of(new SimpleLoggerAdvisor(), new TokenAuditUsageAdvisor()))
                 .defaultSystem("""
                         You are an internal HR assistant. You assist employees with queries related to HR policies

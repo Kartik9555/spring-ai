@@ -1,6 +1,5 @@
 package com.learning.section5.controller;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
@@ -74,7 +73,7 @@ public class RagController {
 
     }
 
-    private @NonNull String getSimilarContext(String message) {
+    private String getSimilarContext(String message) {
         SearchRequest request = SearchRequest.builder()
                 .query(message)
                 .topK(3)

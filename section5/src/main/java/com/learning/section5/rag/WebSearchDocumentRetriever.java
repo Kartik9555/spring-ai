@@ -2,7 +2,7 @@ package com.learning.section5.rag;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
@@ -39,7 +39,7 @@ public class WebSearchDocumentRetriever implements DocumentRetriever {
     }
 
     @Override
-    public List<Document> retrieve(@NonNull Query query) {
+    public @NonNull List<Document> retrieve(@NonNull Query query) {
         Assert.notNull(query, "query should not be null");
         logger.info("Processing query {}", query.text());
 

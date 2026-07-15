@@ -1,6 +1,6 @@
 package com.learning.section5.rag;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
@@ -30,7 +30,7 @@ public class PIIMaskingDocumentPostProcessor implements DocumentPostProcessor {
     private PIIMaskingDocumentPostProcessor() {}
 
     @Override
-    public List<Document> process(@NonNull Query query, @NonNull List<Document> documents) {
+    public @NonNull List<Document> process(@NonNull Query query, @NonNull List<Document> documents) {
         Assert.notNull(query, "Query must not be null");
         Assert.notNull(documents, "Document list must not be null");
         Assert.noNullElements(documents, "Document list must not contain null elements");

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.ai.openai.api.OpenAiApi.ChatModel.GPT_4_1_MINI;
+import static com.openai.models.ChatModel.GPT_4_1_MINI;
 
 @RestController
 @RequestMapping("/api")
@@ -27,7 +27,7 @@ public class PromptStuffingController {
     @GetMapping("/prompt-stuffing")
     public String promptStuffing(@RequestParam("message") String message) {
         return chatClient.prompt()
-                .options(OpenAiChatOptions.builder().model(GPT_4_1_MINI).build())
+                .options(new OpenAiChatOptions.Builder().model(GPT_4_1_MINI.asString()))
                 //.advisors(new TokenAuditUsageAdvisor())
                 .system(systemHRPromptTemplate)
                 .user(message)
