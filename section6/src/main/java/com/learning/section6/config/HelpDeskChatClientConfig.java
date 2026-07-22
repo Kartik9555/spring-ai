@@ -1,10 +1,8 @@
 package com.learning.section6.config;
 
-import com.learning.section6.advisors.TokenAuditUsageAdvisor;
 import com.learning.section6.tools.TimeTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +19,10 @@ public class HelpDeskChatClientConfig {
     Resource promptTemplate;
 
     @Bean("helpDeskChatClient")
-    public ChatClient timeChatClient(ChatClient.Builder clientBuilder, ChatMemory chatMemory, TimeTools timeTools) {
-        Advisor loggingAdvisor = new SimpleLoggerAdvisor();
-        Advisor tokenUsageAdvisor = new TokenAuditUsageAdvisor();
+    public ChatClient helpDeskChatClient(ChatClient.Builder clientBuilder, ChatMemory chatMemory, TimeTools timeTools) {
         Advisor memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
         return clientBuilder
-                .defaultAdvisors(List.of(loggingAdvisor, memoryAdvisor, tokenUsageAdvisor))
+                .defaultAdvisors(List.of(memoryAdvisor))
                 .defaultTools(List.of(timeTools))
                 .defaultSystem(promptTemplate)
                 .build();
