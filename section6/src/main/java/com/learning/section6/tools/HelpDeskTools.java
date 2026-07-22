@@ -34,6 +34,7 @@ public class HelpDeskTools {
         log.info("Fetching tickets for user: {}", username);
         List<HelpDeskTicket> tickets = service.getTicketsByUsername(username);
         log.info("Found {} tickets for user: {}", tickets.size(), username);
+//      throw new RuntimeException("Tickets for user " + username + " not found");
         return tickets;
     }
 }
