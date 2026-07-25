@@ -1,4 +1,4 @@
-package com.learning.section7.advisors;
+package com.learning.section7.mcpclient.advisors;
 
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;

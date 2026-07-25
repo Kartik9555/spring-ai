@@ -1,4 +1,4 @@
-package com.learning.section7;
+package com.learning.section7.mcpclient;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

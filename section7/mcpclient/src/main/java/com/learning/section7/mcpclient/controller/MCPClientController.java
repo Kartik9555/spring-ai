@@ -1,4 +1,4 @@
-package com.learning.section7.controller;
+package com.learning.section7.mcpclient.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
