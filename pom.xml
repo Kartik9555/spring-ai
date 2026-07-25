@@ -31,6 +31,7 @@
         <module>section4</module>
         <module>section5</module>
         <module>section6</module>
+        <module>section7</module>
     </modules>
     <scm>
         <connection/>
