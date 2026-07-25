@@ -12,6 +12,7 @@
     <artifactId>section7</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>mcpserver</module>
         <module>mcpclient</module>
     </modules>
 

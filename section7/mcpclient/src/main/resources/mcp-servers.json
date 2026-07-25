@@ -1,5 +1,12 @@
 {
   "mcpServers": {
+    "spring-ai-mcp": {
+      "command": "/Users/ananya/.sdkman/candidates/java/current/bin/java",
+      "args": [
+        "-jar",
+        "/Users/ananya/Downloads/ai-practice/section7/mcpserver/target/mcpserver-0.0.1-SNAPSHOT.jar"
+      ]
+    },
     "filesystem": {
       "command": "npx",
       "args": [
@@ -7,23 +14,24 @@
         "@modelcontextprotocol/server-filesystem",
         "/Users/ananya/mcp"
       ]
-    },
-    "github": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "GITHUB_PERSONAL_ACCESS_TOKEN",
-        "-e",
-        "GITHUB_HOST",
-        "ghcr.io/github/github-mcp-server"
-      ],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}",
-        "GITHUB_HOST": "https://<your GHES or ghe.com domain name>"
-      }
     }
+//    },
+//    "github": {
+//      "command": "docker",
+//      "args": [
+//        "run",
+//        "-i",
+//        "--rm",
+//        "-e",
+//        "GITHUB_PERSONAL_ACCESS_TOKEN",
+//        "-e",
+//        "GITHUB_HOST",
+//        "ghcr.io/github/github-mcp-server"
+//      ],
+//      "env": {
+//        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}",
+//        "GITHUB_HOST": "https://<your GHES or ghe.com domain name>"
+//      }
+//    }
   }
 }

@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: mcpserverstdio
+  datasource:
+    url: jdbc:h2:file:~/chatmemory;AUTO_SERVER=true
+    driver-class-name: org.h2.Driver
+    username: madan
+    password: 12345
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+  main:
+    web-application-type: none
+    banner-mode: off
+
+logging:
+  level:
+    root: error
