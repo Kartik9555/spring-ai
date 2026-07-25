@@ -8,6 +8,11 @@ spring:
       client:
         stdio:
           servers-configuration: classpath:mcp-servers.json
+        streamable-http:
+          connections:
+            demo:
+              url: http://localhost:8090
+              endpoint: /mcp
 
 logging:
   pattern:

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "spring-ai-mcp": {
+      "command": "/Users/ananya/.sdkman/candidates/java/current/bin/java",
+      "args": [
+        "-jar",
+        "/Users/ananya/Downloads/ai-practice/section7/mcpserver/target/mcpserver-0.0.1-SNAPSHOT.jar"
+      ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/ananya/mcp"
+      ]
+    }
+  }
+}
