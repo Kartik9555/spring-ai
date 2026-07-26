@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -38,6 +40,7 @@ public class MCPClientController {
         ToolCallback[] toolCallbacks = ToolUtil.selectToolsFor(mcpSyncClients, "helpdesk-mcp-server", null);
         return chatClient.prompt()
                 .tools(toolCallbacks)
+                .toolContext(Map.of("progressToken", UUID.randomUUID().toString()))
                 .user(message + "My username is " + username)
                 .call()
                 .content();
