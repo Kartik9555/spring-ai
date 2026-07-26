@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.mcp.annotation.McpTool;
 import org.springframework.ai.mcp.annotation.McpToolParam;
+import org.springframework.ai.mcp.annotation.context.McpSyncRequestContext;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,10 +28,13 @@ public class HelpDeskTools {
     }
 
     @McpTool(name = "getTicketStatus", description = "Fetch the status of the tickets based on a given username")
-    List<HelpDeskTicket> getTicketStatus(@McpToolParam(description = "Username to fetch the status of the Help Desk tickets") String username) {
+    List<HelpDeskTicket> getTicketStatus(@McpToolParam(description = "Username to fetch the status of the Help Desk tickets") String username,
+                                         McpSyncRequestContext context) {
         log.info("Fetching tickets for user: {}", username);
+        context.info("Fetching tickets for user: " + username);
         List<HelpDeskTicket> tickets = service.getTicketsByUsername(username);
         log.info("Found {} tickets for user: {}", tickets.size(), username);
+        context.info("Found " + tickets.size() + " tickets for user: " + username);
         return tickets;
     }
 }
