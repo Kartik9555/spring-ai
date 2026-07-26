@@ -35,7 +35,7 @@ public class MCPClientController {
     @GetMapping("/chat")
     public String chat(@RequestHeader(value = "username", required = false) String username,
             @RequestParam("message") String message) {
-        ToolCallback[] toolCallbacks = ToolUtil.selectToolsFor(mcpSyncClients, "hepdesk-mcp-server", null);
+        ToolCallback[] toolCallbacks = ToolUtil.selectToolsFor(mcpSyncClients, "helpdesk-mcp-server", null);
         return chatClient.prompt()
                 .tools(toolCallbacks)
                 .user(message + "My username is " + username)
