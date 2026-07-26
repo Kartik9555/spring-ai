@@ -18,6 +18,7 @@ spring:
     mcp:
       server:
         protocol: streamable
+        name: helpdesk-mcp-server
 
 server:
   port: 8090
