@@ -13,7 +13,7 @@ spring:
             demo:
               url: http://localhost:8090
               endpoint: /mcp
-        request-timeout: 30s
+        request-timeout: 60s
 
 logging:
   pattern:
