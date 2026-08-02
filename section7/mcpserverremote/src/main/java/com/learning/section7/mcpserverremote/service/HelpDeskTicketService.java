@@ -15,11 +15,13 @@ public class HelpDeskTicketService {
 
     private final HelpDeskTicketRepository helpDeskTicketRepository;
 
-    public HelpDeskTicket createTicket(TicketRequest request) {
+    public HelpDeskTicket createTicket(TicketRequest request, String priority, String contactPhone) {
         HelpDeskTicket ticket = HelpDeskTicket.builder()
                 .username(request.username())
                 .issue(request.issue())
                 .status("OPEN")
+                .priority(priority)
+                .contactPhone(contactPhone)
                 .createdAt(LocalDateTime.now())
                 .eta(LocalDateTime.now().plusDays(7))
                 .build();

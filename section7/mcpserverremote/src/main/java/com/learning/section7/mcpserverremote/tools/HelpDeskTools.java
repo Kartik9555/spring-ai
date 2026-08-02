@@ -1,6 +1,7 @@
 package com.learning.section7.mcpserverremote.tools;
 
 import com.learning.section7.mcpserverremote.entity.HelpDeskTicket;
+import com.learning.section7.mcpserverremote.model.TicketContactInfo;
 import com.learning.section7.mcpserverremote.model.TicketRequest;
 import com.learning.section7.mcpserverremote.service.HelpDeskTicketService;
 import io.modelcontextprotocol.spec.McpSchema;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.mcp.annotation.McpTool;
 import org.springframework.ai.mcp.annotation.McpToolParam;
 import org.springframework.ai.mcp.annotation.context.McpSyncRequestContext;
+import org.springframework.ai.mcp.annotation.context.StructuredElicitResult;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,13 +22,43 @@ import java.util.stream.Collectors;
 public class HelpDeskTools {
 
     private final HelpDeskTicketService service;
+    private static final String DEFAULT_PRIORITY = "MEDIUM";
+    private static final String NO_PHONE_PROVIDED = "N/A";
 
     @McpTool(name = "createTicket", description = "Create the Support ticket")
-    String createTicket(@McpToolParam(description = "Details to create a Support ticket") TicketRequest request){
+    String createTicket(@McpToolParam(description = "Details to create a Support ticket") TicketRequest request, McpSyncRequestContext context){
         log.info("Creating Support ticket for user: {} with details: {}", request.username(), request);
-        HelpDeskTicket ticket = service.createTicket(request);
+        String priority = DEFAULT_PRIORITY;
+        String contactPhone = NO_PHONE_PROVIDED;
+        if(context.elicitEnabled()) {
+            context.info("Asking for a few extra details before opening this ticket...");
+            log.info("Requesting additional ticket details from the MCP client via elicitation...");
+            StructuredElicitResult<TicketContactInfo> result = context.elicit(
+              spec -> spec.message("""
+                        Before we open your support ticket, please choose a priority(LOW, MEDIUM, HIGH OR URGENT) and share a 
+                        contact phone number so our team can reach you.
+                      """),
+                    TicketContactInfo.class
+            );
+            log.info("Elicitation finished with action: {}", result.action());
+            if(result.action() == McpSchema.ElicitResult.Action.ACCEPT && result.structuredContent() != null) {
+                TicketContactInfo info = result.structuredContent();
+                if(info.priority() != null && !info.priority().isBlank()) {
+                    priority = info.priority();
+                }
+                if(info.contactPhone() != null && !info.contactPhone().isBlank()) {
+                    contactPhone = info.contactPhone();
+                }
+                context.info("Thanks! Using priority '" + priority + "' and contact phone '" + contactPhone + "'");
+            } else {
+                context.info("No extra details provided. Opening the ticket with default priority '" + DEFAULT_PRIORITY + "'.");
+            }
+        } else {
+            log.warn("Connected MCP client does not support elicitation. Using default ticket details");
+        }
+        HelpDeskTicket ticket = service.createTicket(request, priority, contactPhone);
         log.info("Ticket created successfully. Ticket ID: {}, Username: {}", ticket.getId(), ticket.getUsername());
-        return "Ticket #" + ticket.getId() + "created successfully for user " + ticket.getUsername();
+        return "Ticket #" + ticket.getId() + "created successfully for user " + ticket.getUsername() + " with priority " + ticket.getPriority() + " (contact phone: " + ticket.getContactPhone() + ").";
     }
 
     @McpTool(name = "getTicketStatus", description = "Fetch the status of the tickets based on a given username")
