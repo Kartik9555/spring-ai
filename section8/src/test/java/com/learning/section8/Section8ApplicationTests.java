@@ -9,6 +9,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.evaluation.FactCheckingEvaluator;
 import org.springframework.ai.chat.evaluation.RelevancyEvaluator;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.evaluation.EvaluationRequest;
@@ -16,8 +17,11 @@ import org.springframework.ai.evaluation.EvaluationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.TestPropertySource;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,15 +42,22 @@ public class Section8ApplicationTests {
 
     private ChatClient chatClient;
     private RelevancyEvaluator relevancyEvaluator;
+    private FactCheckingEvaluator factCheckingEvaluator;
 
     @Value("${test.relevancy.min-score:0.7}")
     private float minRelevancyScore;
 
+    @Value("classpath:/promptTemplates/factcheck.st")
+    Resource factCheckTemplate;
+
     @BeforeEach
-    void setup() {
+    void setup() throws IOException {
         ChatClient.Builder chatClientBuilder = ChatClient.builder(chatModel).defaultAdvisors(new SimpleLoggerAdvisor());
         this.chatClient = chatClientBuilder.build();
         this.relevancyEvaluator = new RelevancyEvaluator(chatClientBuilder);
+        this.factCheckingEvaluator = FactCheckingEvaluator.builder(chatClientBuilder)
+                .evaluationPrompt(factCheckTemplate.getContentAsString(Charset.defaultCharset()))
+                .build();
     }
 
     @Test
@@ -81,6 +92,32 @@ public class Section8ApplicationTests {
                                ==============================================================
                                """, response.getScore(), minRelevancyScore, question, aiResponse)
                         .isGreaterThan(minRelevancyScore)
+        );
+    }
+
+    @Test
+    @DisplayName("Should return factually correct response for gravity-related question")
+    @Timeout(value = 300, unit = TimeUnit.SECONDS)
+    public void evaluateFactAccuracyForGravityQuestion() {
+        // Given
+        String question = "Who discovered the law of universal gravitation?";
+
+        // When
+        String aiResponse = chatController.chat(question);
+
+        EvaluationRequest evaluationRequest = new EvaluationRequest(question, aiResponse);
+        EvaluationResponse response = factCheckingEvaluator.evaluate(evaluationRequest);
+        Assertions.assertAll(
+                () -> assertThat(aiResponse).isNotBlank(),
+                () -> assertThat(response.isPass())
+                        .withFailMessage("""
+                               =================================================
+                               The answer was not considered factually accurate.
+                               Question: "%s"
+                               Response: "%s"
+                               =================================================
+                               """, question, aiResponse)
+                        .isTrue()
         );
     }
 }
