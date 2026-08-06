@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class AudioController {
     }
 
     @GetMapping("/speech")
-    String speech(String message) throws IOException {
+    String speech(@RequestParam("message") String message) throws IOException {
         byte[] audioBytes = textToSpeechModel.call(message);
         Path path = Paths.get("output.mp3");
         Files.write(path, audioBytes);
@@ -63,7 +64,7 @@ public class AudioController {
     }
 
     @GetMapping("/speech-options")
-    String speechWithOptions(String message) throws IOException {
+    String speechWithOptions(@RequestParam("message") String message) throws IOException {
         TextToSpeechResponse call = textToSpeechModel.call(
                 new TextToSpeechPrompt(
                         message,
